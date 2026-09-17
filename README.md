@@ -162,8 +162,8 @@ codveda-ml-internship/
 | **Level 1** | **Task 3** | K-Nearest Neighbors (KNN) | Iris Dataset | **Accuracy: 96.67%** \| F1: 0.97 | ✅ Completed |
 | **Level 2** | **Task 2** | Pruned Decision Tree | Iris Dataset | **Accuracy: 96.67%** \| F1: 0.9666 (CCP $\alpha=0.0063$) | ✅ Completed |
 | **Level 2** | **Task 3** | K-Means Clustering | Telecom Churn | **Optimal $K = 3$** (Elbow Method & PCA Segmentation) | ✅ Completed |
-| **Level 3** | **Task 1** | Random Forest Classifier | Telecom / Financial | Ensemble Tuning & Feature Importance | 🛠️ In Progress |
-| **Level 3** | **Task 3** | Deep Neural Network (MLP) | Classification Dataset | Multi-layer Backpropagation & Convergence | 🛠️ In Progress |
+| **Level 3** | **Task 1** | Random Forest Classifier | Telecom / Financial | Ensemble Tuning & Feature Importance | ✅ Completed |
+| **Level 3** | **Task 3** | Deep Neural Network (MLP) | Classification Dataset | Multi-layer Backpropagation & Convergence | ✅ Completed |
 
 ---
 
