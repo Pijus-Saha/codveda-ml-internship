@@ -2,10 +2,11 @@
 
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![Pandas](https://img.shields.io/badge/pandas-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![NumPy](https://img.shields.io/badge/numpy-013243?logo=numpy&logoColor=white)](https://numpy.org/)
 [![Jupyter Notebook](https://img.shields.io/badge/Jupyter-Notebook-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/)
-[![Status](https://img.shields.io/badge/Status-Completed%20%2F%20In%20Progress-brightgreen)](#)
+[![Status](https://img.shields.io/badge/Status-Completed%20(100%25)-brightgreen)](#)
 [![Internship](https://img.shields.io/badge/Internship-Codveda%20Technologies-6C63FF)](#)
 
 > **Author:** [Pijus Saha](https://github.com/Pijus-Saha)  
@@ -21,8 +22,8 @@ This repository houses my selected task submissions for the **Machine Learning I
 To satisfy the internship graduation requirements, **two targeted machine learning tasks** are selected and implemented per level (totaling 6 comprehensive task implementations). Each task notebook adheres to industry-grade data science practices:
 - **Zero data leakage**: Strict train/test isolation for scalers, imputers, and transformers.
 - **Robust exploratory data analysis (EDA)**: Understanding data distributions, missing values, and collinearity.
-- **Systematic hyperparameter optimization**: Cost-complexity pruning paths, elbow method inertia curves, and neighborhood evaluation curves.
-- **Rigorous evaluation**: Multi-metric evaluation including Stratified Accuracy, Precision, Recall, F1-score, Confusion Matrices, and Cluster Profiles.
+- **Systematic hyperparameter optimization**: Cost-complexity pruning paths, elbow method inertia curves, cross-validated randomized search, and neighborhood evaluation curves.
+- **Rigorous evaluation**: Multi-metric evaluation including Stratified Accuracy, Precision, Recall, F1-score, Confusion Matrices, Cluster Profiles, Feature Importance rankings, and Learning Curves.
 
 ---
 
@@ -49,7 +50,7 @@ codveda-ml-internship/
 │
 ├── Level_3_Advanced/                        # Advanced Ensembles & Deep Learning Architectures
 │   ├── task1_random_forest.ipynb           # Task 1: Tuned Random Forest ensemble & feature importance
-│   └── task3_neural_network.ipynb          # Task 3: Feed-forward neural network / Deep Learning
+│   └── task3_neural_network.ipynb          # Task 3: Feed-forward deep neural network (MLP)
 │
 └── README.md                                # Project documentation & technical walkthrough
 ```
@@ -133,24 +134,62 @@ codveda-ml-internship/
 ### 🔴 Level 3: Advanced Machine Learning
 
 #### 🔹 [Task 1: Build a Random Forest Classifier](file:///e:/codveda-ml-internship/Level_3_Advanced/task1_random_forest.ipynb)
-* **Status:** `In Progress` 🛠️
+* **Status:** `Completed` ✅
 * **Notebook:** [`Level_3_Advanced/task1_random_forest.ipynb`](Level_3_Advanced/task1_random_forest.ipynb)
-* **Target Domain:** Ensemble Bagging & Feature Attribution on complex structured data.
-* **Objectives:**
-  - Build and tune a `RandomForestClassifier` with hyperparameter optimization (`n_estimators`, `max_depth`, `min_samples_split`).
-  - Out-of-Bag (OOB) error estimation and K-Fold cross-validation.
-  - Mean Decrease in Impurity (Gini importance) and Permutation Feature Importance analysis.
+* **Dataset:** Telecom Churn (`churn-bigml-80.csv`, 2,666 entries, 20 features)
+* **Core Objective:** Build, tune, and evaluate an ensemble Random Forest classifier on structured customer churn data and extract Mean Decrease in Impurity (Gini importance) feature attributions.
+* **Pipeline Methodology:**
+  1. **Feature Engineering & One-Hot Encoding:** Binary-mapped service plans (`International plan`, `Voice mail plan`) and applied One-Hot Encoding (`pd.get_dummies(..., drop_first=True)`) to categorical features, creating a 68-dimensional feature matrix.
+  2. **Stratified Partitioning:** Executed an 80/20 train/test split with target stratification on `Churn` (2,132 training samples, 534 holdout test samples).
+  3. **Hyperparameter Optimization via RandomizedSearchCV:** Configured `RandomizedSearchCV` with 3-fold cross-validation across 20 candidate combinations covering:
+     * `n_estimators`: `[100, 200, 300, 400]`
+     * `max_depth`: `[10, 20, 30, None]`
+     * `min_samples_split`: `[2, 5, 10]`
+     * `min_samples_leaf`: `[1, 2, 4]`
+     * `bootstrap`: `[True, False]`
+  4. **Optimal Parameter Identification:** Extracted best hyperparameter profile:
+     `{'n_estimators': 300, 'min_samples_split': 5, 'min_samples_leaf': 1, 'max_depth': 30, 'bootstrap': False}`.
+  5. **Cross-Validation Verification:** Performed 5-fold cross-validation on the training partition yielding an accuracy of **93.95% (+/- 0.0035)**.
+  6. **Feature Importance Attribution:** Calculated Gini importance scores and generated a barplot ranking the top 15 churn drivers, confirming that call charges/minutes (`Total day charge`, `Total day minutes`, `Customer service calls`, `International plan_Yes`, `Total eve charge`) dominate customer defection probability.
+* **Performance Results:**
+  * **Test Set Accuracy:** **94.76%** (506/534 correct classifications)
+  * **5-Fold Cross-Validation Accuracy:** **93.95%**
+  * **Per-Class Metrics:**
+    * `Non-Churn (0)`: Precision = **0.94**, Recall = **1.00**, F1-Score = **0.97** (Support: 456)
+    * `Churn (1)`: Precision = **1.00**, Recall = **0.64**, F1-Score = **0.78** (Support: 78)
+  * **Macro Avg:** Precision = **0.97**, Recall = **0.82**, F1-Score = **0.88**
+  * **Weighted Avg:** Precision = **0.95**, Recall = **0.95**, F1-Score = **0.94**
+  * **Visualizations:** High-resolution horizontal barplot of the Top 15 Feature Importances.
 
 ---
 
-#### 🔹 [Task 3: Deep Neural Networks with PyTorch / TensorFlow](file:///e:/codveda-ml-internship/Level_3_Advanced/task3_neural_network.ipynb)
-* **Status:** `In Progress` 🛠️
+#### 🔹 [Task 3: Deep Neural Networks with TensorFlow / Keras](file:///e:/codveda-ml-internship/Level_3_Advanced/task3_neural_network.ipynb)
+* **Status:** `Completed` ✅
 * **Notebook:** [`Level_3_Advanced/task3_neural_network.ipynb`](Level_3_Advanced/task3_neural_network.ipynb)
-* **Target Domain:** Deep Feed-Forward Neural Networks (Multi-Layer Perceptrons).
-* **Objectives:**
-  - Design modular deep neural architecture (Input, Dense Hidden Layers with ReLU activations, Dropout regularizers, Output layer).
-  - Train via backpropagation using Adam optimizer and Cross-Entropy loss.
-  - Plot dynamic training vs. validation loss/accuracy learning curves to diagnose convergence and prevent overfitting.
+* **Dataset:** Telecom Churn (`churn-bigml-80.csv`, 2,666 entries)
+* **Core Objective:** Design, train, and diagnose a Deep Feed-Forward Neural Network (Multi-Layer Perceptron) for binary customer churn classification using TensorFlow / Keras with dropout regularization and early stopping.
+* **Pipeline Methodology:**
+  1. **Strict Input Standardization:** One-hot encoded categorical variables with `drop_first=True` (68 features). Standardized all features using `StandardScaler` fitted strictly on training data to ensure stable gradient descent and prevent gradient saturation.
+  2. **Deep MLP Architecture:** Constructed a modular `Sequential` deep neural network:
+     * **Input Layer:** 68 input dimensions matching preprocessed features.
+     * **Dense Layer 1:** 64 hidden units with **ReLU** activation (4,416 parameters).
+     * **Dropout Regularization 1:** 30% dropout rate (`Dropout(0.3)`) to prevent node co-adaptation.
+     * **Dense Layer 2:** 32 hidden units with **ReLU** activation (2,080 parameters).
+     * **Dropout Regularization 2:** 20% dropout rate (`Dropout(0.2)`).
+     * **Output Layer:** 1 neuron with **Sigmoid** activation for calibrated churn probabilities (33 parameters).
+     * **Total Trainable Parameters:** 6,529.
+  3. **Compilation & Optimization:** Compiled using the **Adam** adaptive learning rate optimizer and **Binary Crossentropy** loss function.
+  4. **Training Dynamics & Early Stopping:**
+     * Max Epochs: 100 with batch size of 32.
+     * Internal Validation: 20% validation split on training data (427 validation samples).
+     * Callback: `EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)`.
+     * Convergence: Early stopping triggered at **Epoch 30**, restoring best weights to prevent overfitting.
+  5. **Diagnostic Visualizations:** Generated 1x2 dual subplots showing Model Accuracy and Model Loss curves across all training epochs, confirming convergence and generalization.
+* **Performance Results:**
+  * **Test Set Accuracy:** **85.96%** (on completely unseen holdout set)
+  * **Test Set Loss:** **0.4187** (Binary Cross-Entropy)
+  * **Training Convergence:** Train Accuracy = **94.02%**, Validation Accuracy = **87.12%**
+  * **Visualizations:** Dual Training vs. Validation Learning Curves (Accuracy & Loss over Epochs).
 
 ---
 
@@ -162,8 +201,8 @@ codveda-ml-internship/
 | **Level 1** | **Task 3** | K-Nearest Neighbors (KNN) | Iris Dataset | **Accuracy: 96.67%** \| F1: 0.97 | ✅ Completed |
 | **Level 2** | **Task 2** | Pruned Decision Tree | Iris Dataset | **Accuracy: 96.67%** \| F1: 0.9666 (CCP $\alpha=0.0063$) | ✅ Completed |
 | **Level 2** | **Task 3** | K-Means Clustering | Telecom Churn | **Optimal $K = 3$** (Elbow Method & PCA Segmentation) | ✅ Completed |
-| **Level 3** | **Task 1** | Random Forest Classifier | Telecom / Financial | Ensemble Tuning & Feature Importance | ✅ Completed |
-| **Level 3** | **Task 3** | Deep Neural Network (MLP) | Classification Dataset | Multi-layer Backpropagation & Convergence | ✅ Completed |
+| **Level 3** | **Task 1** | Tuned Random Forest | Telecom Churn | **Accuracy: 94.76%** \| 5-Fold CV: 93.95% \| F1: 0.94 | ✅ Completed |
+| **Level 3** | **Task 3** | Deep Neural Network (MLP) | Telecom Churn | **Accuracy: 85.96%** \| Loss: 0.4187 (Early Stopping) | ✅ Completed |
 
 ---
 
@@ -171,7 +210,7 @@ codveda-ml-internship/
 
 | Dataset File | Domain | Rows / Columns | Primary Use Case in Repo |
 | :--- | :--- | :--- | :--- |
-| `churn-bigml-80.csv` | Telecommunications | 2,666 × 20 | Level 1 Task 1 (Preprocessing) & Level 2 Task 3 (K-Means) |
+| `churn-bigml-80.csv` | Telecommunications | 2,666 × 20 | Level 1 Task 1 (Prep), Level 2 Task 3 (K-Means), Level 3 Task 1 (RF), Level 3 Task 3 (NN) |
 | `churn-bigml-20.csv` | Telecommunications | 667 × 20 | Out-of-sample holdout test partition for churn models |
 | `iris.csv` | Botany / Taxonomy | 150 × 5 | Level 1 Task 3 (KNN) & Level 2 Task 2 (Decision Trees) |
 | `house_Prediction_Data Set.csv` | Real Estate | 545 × 13 | Continuous variable regression analysis |
@@ -204,7 +243,7 @@ source venv/bin/activate
 
 ### 3. Install Required Dependencies
 ```bash
-pip install numpy pandas scikit-learn matplotlib seaborn jupyterlab
+pip install numpy pandas scikit-learn matplotlib seaborn jupyterlab tensorflow
 ```
 
 ### 4. Launch Jupyter Lab
@@ -220,6 +259,7 @@ Navigate to any notebook under `Level_1_Basic/`, `Level_2_Intermediate/`, or `Le
 * **Core Language:** Python 3.10+
 * **Data Manipulation:** `pandas`, `numpy`
 * **Machine Learning & Preprocessing:** `scikit-learn`
+* **Deep Learning Framework:** `tensorflow` / `keras`
 * **Data Visualization:** `matplotlib`, `seaborn`
 * **Development Environment:** Jupyter Notebook / JupyterLab, Visual Studio Code
 
@@ -238,4 +278,5 @@ Navigate to any notebook under `Level_1_Basic/`, `Level_2_Intermediate/`, or `Le
 
 Special thanks to **Codveda Technologies** for providing this structured internship opportunity.
 
-`#Codveda` `#CodvedaJourney` `#CodvedaExperience` `#FutureWithCodveda` `#MachineLearning` `#DataScience` `#Python` `#ArtificialIntelligence`
+`#Codveda` `#CodvedaJourney` `#CodvedaExperience` `#FutureWithCodveda` `#MachineLearning` `#DataScience` `#Python` `#DeepLearning` `#ArtificialIntelligence`
+
